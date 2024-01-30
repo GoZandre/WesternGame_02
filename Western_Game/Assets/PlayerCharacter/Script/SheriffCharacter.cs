@@ -16,7 +16,7 @@ public class SheriffCharacter : MonoBehaviour
     private Animator _gunAnimator;
     [SerializeField]
     private LassoBehvior _lasso;
-    
+
 
     [Space(20)]
     [SerializeField]
@@ -41,7 +41,7 @@ public class SheriffCharacter : MonoBehaviour
         _playerInputs = new PlayerInputs();
         _cameraShake = Camera.main.GetComponent<CameraShake>();
         _camera = Camera.main;
-        
+
     }
 
     private void OnEnable()
@@ -79,6 +79,15 @@ public class SheriffCharacter : MonoBehaviour
             ProjectileBehavior newProjectile = Instantiate(_projectilePrefab, _projectileSpawner);
             newProjectile.transform.parent = null;
 
+            RaycastHit hit;
+
+            if(Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 1000f))
+            {
+                Vector3 direction = hit.point - _projectileSpawner.transform.position;
+
+                newProjectile.transform.rotation = Quaternion.LookRotation(direction);
+            }
+
             //Play effects
             StartCoroutine(_cameraShake.Shake(.2f, .5f));
 
@@ -90,7 +99,7 @@ public class SheriffCharacter : MonoBehaviour
 
     public void Reload(InputAction.CallbackContext obj)
     {
-        if(_chargerAmmo < maxAmmo)
+        if (_chargerAmmo < maxAmmo)
         {
             _canShoot = false;
             _gunAnimator.SetTrigger("Reload");
@@ -99,7 +108,7 @@ public class SheriffCharacter : MonoBehaviour
 
             StartCoroutine(LockShootDelay(.46f));
         }
-        
+
     }
 
     public void LaunchLasso(InputAction.CallbackContext obj)
@@ -110,20 +119,27 @@ public class SheriffCharacter : MonoBehaviour
 
         if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 200f))
         {
-            if(hit.collider.gameObject.TryGetComponent<GrabbableObject>(out grabbedObject))
+            if (hit.collider.gameObject.TryGetComponent<GrabbableObject>(out grabbedObject))
             {
 
-                Debug.Log(hit.collider.gameObject);
                 _lasso.GrabObject(hit);
 
             }
+            else
+            {
+                _lasso.UngrabObject();
+            }
+        }
+        else
+        {
+            _lasso.UngrabObject();
         }
 
     }
 
 
 
-        private IEnumerator LockShootDelay(float delay)
+    private IEnumerator LockShootDelay(float delay)
     {
         _canShoot = false;
 

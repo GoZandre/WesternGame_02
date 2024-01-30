@@ -12,19 +12,37 @@ public class LassoBehvior : MonoBehaviour
     private float _lassoLerp;
 
     private LineRenderer lineRenderer;
+    private SpringJoint joint;
 
     private Transform _grabbedObject;
 
     private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        joint = GetComponent<SpringJoint>();
         _grabbedObject = null;
         _lassoLerp = 0;
     }
 
     public void GrabObject(RaycastHit raycastHitObject)
     {
+        _lassoLerp = 0;
         SetLassoObjective(raycastHitObject.transform);
+
+        Rigidbody rb;
+
+        if(raycastHitObject.transform.TryGetComponent<Rigidbody>(out rb))
+        {
+            joint.connectedBody = rb;
+            joint.connectedAnchor = raycastHitObject.transform.position - transform.position;
+        }
+        
+    }
+
+    public void UngrabObject()
+    {
+        _grabbedObject = null;
+        joint.connectedBody = null;
     }
 
     public void SetLassoObjective(Transform newTransform)
@@ -50,6 +68,10 @@ public class LassoBehvior : MonoBehaviour
             {
                 lineRenderer.SetPosition(1, _grabbedObject.position);
             }
+        }
+        else
+        {
+            lineRenderer.SetPosition(1, transform.position);
         }
     }
 }
