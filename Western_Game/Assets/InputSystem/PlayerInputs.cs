@@ -80,15 +80,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""LassoLaunch"",
-                    ""type"": ""PassThrough"",
-                    ""id"": ""ea0f7b42-c099-4534-984c-203c0dd69e59"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -289,17 +280,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""435481e3-cfa4-405f-b08c-de310575c9f5"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LassoLaunch"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -362,7 +342,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
-        m_Player_LassoLaunch = m_Player.FindAction("LassoLaunch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -428,7 +407,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Sprint;
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Reload;
-    private readonly InputAction m_Player_LassoLaunch;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -439,7 +417,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_Player_Sprint;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
-        public InputAction @LassoLaunch => m_Wrapper.m_Player_LassoLaunch;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -467,9 +444,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @Reload.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
                 @Reload.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
                 @Reload.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnReload;
-                @LassoLaunch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLassoLaunch;
-                @LassoLaunch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLassoLaunch;
-                @LassoLaunch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLassoLaunch;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -492,9 +466,6 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
-                @LassoLaunch.started += instance.OnLassoLaunch;
-                @LassoLaunch.performed += instance.OnLassoLaunch;
-                @LassoLaunch.canceled += instance.OnLassoLaunch;
             }
         }
     }
@@ -543,6 +514,5 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
-        void OnLassoLaunch(InputAction.CallbackContext context);
     }
 }
