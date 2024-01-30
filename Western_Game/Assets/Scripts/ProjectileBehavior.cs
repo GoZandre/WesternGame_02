@@ -21,9 +21,4 @@ public class ProjectileBehavior : MonoBehaviour
 
         transform.position += transform.forward * projectileSpeed / 1000;
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        
-    }
 }

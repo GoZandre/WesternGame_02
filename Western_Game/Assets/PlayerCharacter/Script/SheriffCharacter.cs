@@ -9,14 +9,9 @@ public class SheriffCharacter : MonoBehaviour
     [System.NonSerialized]
     public CameraShake _cameraShake;
 
-    private Camera _camera;
-
     [Header("References")]
     [SerializeField]
     private Animator _gunAnimator;
-    [SerializeField]
-    private LassoBehvior _lasso;
-
 
     [Space(20)]
     [SerializeField]
@@ -40,8 +35,7 @@ public class SheriffCharacter : MonoBehaviour
     {
         _playerInputs = new PlayerInputs();
         _cameraShake = Camera.main.GetComponent<CameraShake>();
-        _camera = Camera.main;
-
+        Debug.Log(_cameraShake);
     }
 
     private void OnEnable()
@@ -57,8 +51,7 @@ public class SheriffCharacter : MonoBehaviour
     private void Start()
     {
         _playerInputs.Player.Fire.started += Fire;
-        _playerInputs.Player.Reload.started += Reload;
-        _playerInputs.Player.LassoLaunch.started += LaunchLasso;
+        _playerInputs.Player.Reload.started += Fire;
 
         _canShoot = true;
         _chargerAmmo = maxAmmo;
@@ -67,31 +60,20 @@ public class SheriffCharacter : MonoBehaviour
 
     public void Fire(InputAction.CallbackContext obj)
     {
-        if (_canShoot & _chargerAmmo > 0)
+        if (_canShoot)
         {
             _gunAnimator.SetTrigger("Fire");
             _canShoot = false;
-
-            _chargerAmmo--;
 
             //Spawn orijectile
 
             ProjectileBehavior newProjectile = Instantiate(_projectilePrefab, _projectileSpawner);
             newProjectile.transform.parent = null;
 
-            RaycastHit hit;
-
-            if(Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 1000f))
-            {
-                Vector3 direction = hit.point - _projectileSpawner.transform.position;
-
-                newProjectile.transform.rotation = Quaternion.LookRotation(direction);
-            }
-
             //Play effects
             StartCoroutine(_cameraShake.Shake(.2f, .5f));
 
-            StartCoroutine(LockShootDelay(fireRate));
+            StartCoroutine(FireDelay());
         }
 
     }
@@ -99,54 +81,13 @@ public class SheriffCharacter : MonoBehaviour
 
     public void Reload(InputAction.CallbackContext obj)
     {
-        if (_chargerAmmo < maxAmmo)
-        {
-            _canShoot = false;
-            _gunAnimator.SetTrigger("Reload");
-
-            _chargerAmmo = maxAmmo;
-
-            StartCoroutine(LockShootDelay(.46f));
-        }
-
-    }
-
-    public void LaunchLasso(InputAction.CallbackContext obj)
-    {
-
-        RaycastHit hit;
-        GrabbableObject grabbedObject;
-
-        if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 200f))
-        {
-            if (hit.collider.gameObject.TryGetComponent<GrabbableObject>(out grabbedObject))
-            {
-
-                _lasso.GrabObject(hit);
-
-            }
-            else
-            {
-                _lasso.UngrabObject();
-            }
-        }
-        else
-        {
-            _lasso.UngrabObject();
-        }
-
-    }
-
-
-
-    private IEnumerator LockShootDelay(float delay)
-    {
         _canShoot = false;
+    }
 
+    private IEnumerator FireDelay()
+    {
         yield return new WaitForSeconds(fireRate);
-
         _canShoot = true;
     }
-
 
 }
