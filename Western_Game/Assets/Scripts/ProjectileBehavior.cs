@@ -9,6 +9,11 @@ public class ProjectileBehavior : MonoBehaviour
     public float projectileLifetime = 3;
 
     private float life = 0;
+
+    public float bulletDamage;
+
+    public float bulletStrength;
+
     void FixedUpdate()
     {
 
@@ -19,6 +24,32 @@ public class ProjectileBehavior : MonoBehaviour
             Destroy(gameObject);
         }
 
-        transform.position += transform.forward * projectileSpeed / 1000;
+        transform.position += transform.forward * projectileSpeed / 100;
+    }
+
+    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        EnemyBehavior enemy;
+        ExplosiveObject explosive;
+        Rigidbody rb;
+
+        if (other.gameObject.TryGetComponent<EnemyBehavior>(out enemy))
+        {
+            enemy.TakeDamage(bulletDamage);
+
+            Destroy(gameObject);
+        }
+        if(other.gameObject.TryGetComponent<ExplosiveObject>(out explosive))
+        {
+            explosive.Explode();
+        }
+        if(other.gameObject.TryGetComponent<Rigidbody>(out rb))
+        {
+            rb.AddForce(projectileSpeed * bulletStrength * transform.forward);
+
+            Destroy(gameObject);
+        }
     }
 }

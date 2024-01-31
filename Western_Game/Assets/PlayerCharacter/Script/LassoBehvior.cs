@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class LassoBehvior : MonoBehaviour
 {
+    public UnityEvent OnGrabObject = new UnityEvent();
+    public UnityEvent OnUngrabObject = new UnityEvent();
+
     [Header("Parameters")]
 
     public float lassoSpeed;
@@ -14,13 +19,17 @@ public class LassoBehvior : MonoBehaviour
     private LineRenderer lineRenderer;
     private SpringJoint joint;
 
-    private Transform _grabbedObject;
+    public Transform grabbedObject;
 
     private void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
         joint = GetComponent<SpringJoint>();
-        _grabbedObject = null;
+
+        OnGrabObject.RemoveAllListeners();
+        OnUngrabObject.RemoveAllListeners();
+
+        grabbedObject = null;
         _lassoLerp = 0;
     }
 
@@ -36,37 +45,41 @@ public class LassoBehvior : MonoBehaviour
             joint.connectedBody = rb;
             joint.connectedAnchor = raycastHitObject.transform.position - transform.position;
         }
-        
+
+        OnGrabObject.Invoke();
     }
 
     public void UngrabObject()
     {
-        _grabbedObject = null;
+        OnUngrabObject.Invoke();
+        OnUngrabObject.RemoveAllListeners();
+
+        grabbedObject = null;
         joint.connectedBody = null;
     }
 
     public void SetLassoObjective(Transform newTransform)
     {
-        _grabbedObject = newTransform;
+        grabbedObject = newTransform;
     }
 
     private void Update()
     {
         lineRenderer.SetPosition(0, transform.position);
 
-        if (_grabbedObject != null)
+        if (grabbedObject != null)
         {
             if(_lassoLerp <= 1)
             {
                 _lassoLerp += Time.deltaTime * lassoSpeed;
 
-                Vector3 newPos = Vector3.Lerp(lineRenderer.GetPosition(0), _grabbedObject.position, _lassoLerp);
+                Vector3 newPos = Vector3.Lerp(lineRenderer.GetPosition(0), grabbedObject.position, _lassoLerp);
 
                 lineRenderer.SetPosition(1, newPos);
             }
             else
             {
-                lineRenderer.SetPosition(1, _grabbedObject.position);
+                lineRenderer.SetPosition(1, grabbedObject.position);
             }
         }
         else

@@ -1,18 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class GrabbableObject : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private NavMeshAgent agent;
+
+    private void Awake()
     {
-        
+        TryGetComponent<NavMeshAgent>(out agent);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnGrab()
     {
-        
+        if(agent != null)
+        {
+            agent.enabled = false;
+            GetComponent<Rigidbody>().isKinematic = false;
+        }
+    }
+
+    public void OnUngrab()
+    {
+        if (agent != null)
+        {
+            agent.enabled = true;
+            GetComponent<Rigidbody>().isKinematic = true;
+            GetComponent<EnemyBehavior>().MoveToNextPath();
+        }
     }
 }
