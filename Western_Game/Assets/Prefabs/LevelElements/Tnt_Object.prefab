@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2014965113671158402}
   - component: {fileID: 2014965113671158405}
   - component: {fileID: 2014965113671158404}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Tnt_Object
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29,7 +29,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2014965113671158463}
-  m_LocalRotation: {x: -0, y: -0, z: -0.7070865, w: 0.70712715}
+  m_LocalRotation: {x: 0, y: 0, z: -0.70708823, w: 0.7071253}
   m_LocalPosition: {x: 2.53, y: 1.135, z: -1.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -67,7 +67,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &2014965113671158403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,6 +92,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96c172b23ac96524d81e7aa25ceae389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosiveParticles: {fileID: 7827870141879141164, guid: f8c2a2b6c749a5240adbbbeda0f45895,
+    type: 3}
+  ExplosionSpeed: 100
 --- !u!135 &2014965113671158405
 SphereCollider:
   m_ObjectHideFlags: 0

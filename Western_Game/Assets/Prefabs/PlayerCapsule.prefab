@@ -47,10 +47,62 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 484aa5df27b3c1749aa2adaebc8db8cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnGrabObject:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 6769587122903424569}
+        m_TargetAssemblyTypeName: SheriffCharacter, Assembly-CSharp
+        m_MethodName: SetPowerActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
   OnUngrabObject:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6769587122903424569}
+        m_TargetAssemblyTypeName: SheriffCharacter, Assembly-CSharp
+        m_MethodName: SetPowerActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   lassoSpeed: 20
+  grabbedObject: {fileID: 0}
 --- !u!120 &156517038
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -5033,6 +5085,37 @@ Transform:
   m_Father: {fileID: 543450652265251675}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2036918385
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2036918386}
+  m_Layer: 0
+  m_Name: DynamiteSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2036918386
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036918385}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4135013735270702856}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &36756678127881658
 GameObject:
   m_ObjectHideFlags: 0
@@ -5313,6 +5396,7 @@ Transform:
   m_Children:
   - {fileID: 543450652265251675}
   - {fileID: 156517037}
+  - {fileID: 2036918386}
   m_Father: {fileID: 8997996947095583982}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5743,13 +5827,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f97145b1d25012428ed531f654a0858, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
   _gunAnimator: {fileID: 8825050946645099633}
   _lasso: {fileID: 156517039}
+  _interactionUI: {fileID: 0}
+  _dynamiteCountText: {fileID: 0}
   _projectileSpawner: {fileID: 1629960287}
   _projectilePrefab: {fileID: 3619170425299447544, guid: 207b8ca4018d9bf44bd4e79aad73666a,
     type: 3}
+  _dynamitePrefab: {fileID: 2014965113671158402, guid: 05174326000997142b1c78bf87abdeca,
+    type: 3}
+  _explosiveSpawner: {fileID: 2036918386}
   maxAmmo: 6
   fireRate: 0.25
+  interactionDistance: 3
+  interactionLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  DynamiteCount: 0
 --- !u!1 &8825050946645099632
 GameObject:
   m_ObjectHideFlags: 0
