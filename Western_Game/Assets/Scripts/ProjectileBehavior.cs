@@ -41,11 +41,11 @@ public class ProjectileBehavior : MonoBehaviour
 
             Destroy(gameObject);
         }
-        if(other.gameObject.TryGetComponent<ExplosiveObject>(out explosive))
+        else if(other.gameObject.TryGetComponent<ExplosiveObject>(out explosive))
         {
             explosive.Explode();
         }
-        if(other.gameObject.TryGetComponent<Rigidbody>(out rb))
+        else if(other.gameObject.TryGetComponent<Rigidbody>(out rb))
         {
             rb.AddForce(projectileSpeed * bulletStrength * transform.forward);
 

@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using TMPro;
 
 public class SheriffCharacter : MonoBehaviour
 {
 
-    public UnityEvent OnInteract = new UnityEvent();
+    public UnityEvent<SheriffCharacter> OnInteract = new UnityEvent<SheriffCharacter>();
+
+
 
     public PlayerInputs _playerInputs;
     [System.NonSerialized]
@@ -24,6 +27,12 @@ public class SheriffCharacter : MonoBehaviour
     [SerializeField]
     private LassoBehvior _lasso;
 
+    [Space(20)]
+
+    [SerializeField]
+    private GameObject _interactionUI;
+    [SerializeField]
+    private TextMeshProUGUI _dynamiteCountText;
 
     [Space(20)]
     [SerializeField]
@@ -31,12 +40,21 @@ public class SheriffCharacter : MonoBehaviour
     [SerializeField]
     private ProjectileBehavior _projectilePrefab;
 
+    [Space(20)]
+    [SerializeField]
+    private ExplosiveObject _dynamitePrefab;
+    [SerializeField]
+    private Transform _explosiveSpawner;
+
     [Header("Parameters")]
     public int maxAmmo;
 
     public float fireRate;
 
+    public float interactionDistance;
+    public LayerMask interactionLayerMask;
 
+    public int DynamiteCount = 0;
 
 
 
@@ -75,16 +93,75 @@ public class SheriffCharacter : MonoBehaviour
         _playerInputs.Player.SwitchPower.started += SwitchPower;
         _playerInputs.Player.VoodooPower.started += VoodooPower;
         _playerInputs.Player.Interact.started += Interact;
+        _playerInputs.Player.SpawnDynamite.started += SpanDynamite;
 
 
         SetPowerActive(false);
         _canShoot = true;
         _chargerAmmo = maxAmmo;
+        _dynamiteCountText.text = DynamiteCount.ToString();
+    }
+
+    private CollectableObject currentCollectable;
+
+    [System.Obsolete]
+    private void FixedUpdate()
+    {
+        RaycastHit hit;
+        CollectableObject collectableObject;
+
+        if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, interactionDistance, interactionLayerMask))
+        {
+            if(hit.collider.gameObject.TryGetComponent<CollectableObject>(out collectableObject))
+            {
+
+                if (currentCollectable != collectableObject || currentCollectable == null)
+                {
+                    if(currentCollectable != null)
+                    {
+                        OnInteract.RemoveListener(currentCollectable.Collect);
+                    }
+                    
+
+                    currentCollectable = collectableObject;
+
+                    OnInteract.AddListener(collectableObject.Collect);
+
+                   
+                }
+
+                if (!_interactionUI.active)
+                {
+                    _interactionUI.SetActive(true);
+                }
+                
+            }
+            else
+            {
+                OnInteract.RemoveAllListeners();
+                currentCollectable = null;
+
+                if (_interactionUI.active)
+                {
+                    _interactionUI.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            OnInteract.RemoveAllListeners();
+            currentCollectable = null;
+
+            if (_interactionUI.active)
+            {
+                _interactionUI.SetActive(false);
+            }
+        }
     }
 
     public void Interact(InputAction.CallbackContext obj)
     {
-        OnInteract.Invoke();
+        OnInteract.Invoke(this);
     }
 
     public void Fire(InputAction.CallbackContext obj)
@@ -192,6 +269,26 @@ public class SheriffCharacter : MonoBehaviour
     {
     }
 
+    public void AddDynamite()
+    {
+        DynamiteCount++;
+        _dynamiteCountText.text = DynamiteCount.ToString();
+    }
+
+    public void SpanDynamite(InputAction.CallbackContext obj)
+    {
+        if(DynamiteCount > 0)
+        {
+            ExplosiveObject newDynamite = Instantiate(_dynamitePrefab);
+
+            newDynamite.transform.position = _explosiveSpawner.transform.position;
+            newDynamite.GetComponent<Rigidbody>().AddForce(new Vector3(0, 100f, 0) + _camera.transform.forward * 500f);
+
+
+            DynamiteCount--;
+            _dynamiteCountText.text = DynamiteCount.ToString();
+        }
+    }
 
     private IEnumerator ReloadFirstPersonController()
     {
@@ -209,5 +306,16 @@ public class SheriffCharacter : MonoBehaviour
         _canShoot = true;
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        if (_camera != null)
+        {
+            Gizmos.DrawWireSphere(_camera.transform.position + _camera.transform.forward * interactionDistance, 0.25f);
+        }
+       
+
+        
+    }
 
 }
