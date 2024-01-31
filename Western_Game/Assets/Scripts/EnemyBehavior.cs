@@ -13,6 +13,8 @@ public class EnemyBehavior : MonoBehaviour
 
     private UnityEvent onMoveCharacter = new UnityEvent();
 
+    public UnityEvent OnDie = new UnityEvent();
+
     public float maxHealth;
     private float health;
 
@@ -95,7 +97,7 @@ public class EnemyBehavior : MonoBehaviour
             pathIndex = 0;
         }
 
-        Debug.Log("Destination reached");
+       
 
         if(maxWaitOnPoint >= 0)
         {
@@ -124,6 +126,9 @@ public class EnemyBehavior : MonoBehaviour
 
         if(health <= 0)
         {
+            OnDie.Invoke();
+
+
             if (_healthBar != null)
             {
                 Destroy(_healthBar.gameObject);

@@ -39,6 +39,8 @@ public class ExplosiveObject : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.gameObject);
+
         DestructibleObject destructibleObject;
         EnemyBehavior enemy;
         Rigidbody rb;
@@ -50,7 +52,7 @@ public class ExplosiveObject : MonoBehaviour
         }
         else if(other.gameObject.TryGetComponent<EnemyBehavior>(out enemy))
         {
-            enemy.TakeDamage(100f);
+            enemy.TakeDamage(1000f);
         }
         else if(other.gameObject.TryGetComponent<ExplosiveObject>(out explosive))
         {
