@@ -1,13 +1,20 @@
+using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class SheriffCharacter : MonoBehaviour
 {
+
+    public UnityEvent OnInteract = new UnityEvent();
+
     public PlayerInputs _playerInputs;
     [System.NonSerialized]
     public CameraShake _cameraShake;
+
+    private CharacterController _controller;
 
     private Camera _camera;
 
@@ -31,15 +38,21 @@ public class SheriffCharacter : MonoBehaviour
 
 
 
+
+
     //Input variables
 
     private int _chargerAmmo;
     private bool _canShoot;
 
+    private bool canUsePower;
+
+
     private void Awake()
     {
         _playerInputs = new PlayerInputs();
         _cameraShake = Camera.main.GetComponent<CameraShake>();
+        _controller = GetComponent<CharacterController>();
         _camera = Camera.main;
 
     }
@@ -59,11 +72,20 @@ public class SheriffCharacter : MonoBehaviour
         _playerInputs.Player.Fire.started += Fire;
         _playerInputs.Player.Reload.started += Reload;
         _playerInputs.Player.LassoLaunch.started += LaunchLasso;
+        _playerInputs.Player.SwitchPower.started += SwitchPower;
+        _playerInputs.Player.VoodooPower.started += VoodooPower;
+        _playerInputs.Player.Interact.started += Interact;
 
+
+        SetPowerActive(false);
         _canShoot = true;
         _chargerAmmo = maxAmmo;
     }
 
+    public void Interact(InputAction.CallbackContext obj)
+    {
+        OnInteract.Invoke();
+    }
 
     public void Fire(InputAction.CallbackContext obj)
     {
@@ -81,7 +103,7 @@ public class SheriffCharacter : MonoBehaviour
 
             RaycastHit hit;
 
-            if(Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 1000f))
+            if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 1000f))
             {
                 Vector3 direction = hit.point - _projectileSpawner.transform.position;
 
@@ -121,6 +143,9 @@ public class SheriffCharacter : MonoBehaviour
         {
             if (hit.collider.gameObject.TryGetComponent<GrabbableObject>(out grabbedObject))
             {
+                _lasso.OnUngrabObject.AddListener(grabbedObject.OnUngrab);
+
+                grabbedObject.OnGrab();
 
                 _lasso.GrabObject(hit);
 
@@ -137,6 +162,42 @@ public class SheriffCharacter : MonoBehaviour
 
     }
 
+    public void SetPowerActive(bool isActive)
+    {
+        canUsePower = isActive;
+    }
+
+    public void SwitchPower(InputAction.CallbackContext obj)
+    {
+        if (canUsePower)
+        {
+            GetComponent<FirstPersonController>().enabled = false;
+
+
+
+            Vector3 position = transform.position;
+
+
+
+            transform.position = _lasso.grabbedObject.position;
+
+            _lasso.grabbedObject.position = position;
+
+            _lasso.UngrabObject();
+
+            StartCoroutine(ReloadFirstPersonController());
+        }
+    }
+    public void VoodooPower(InputAction.CallbackContext obj)
+    {
+    }
+
+
+    private IEnumerator ReloadFirstPersonController()
+    {
+        yield return null;
+        GetComponent<FirstPersonController>().enabled = true;
+    }
 
 
     private IEnumerator LockShootDelay(float delay)

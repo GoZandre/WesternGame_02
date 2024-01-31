@@ -89,6 +89,33 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchPower"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""a898223c-f7b0-4432-93f6-f569607ea16e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""VoodooPower"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""607e3c5c-10f4-4c12-a79b-c58e84ee3d46"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""b3998443-7fcd-4d8d-8dc0-fde1c5caf20c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -300,6 +327,39 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                     ""action"": ""LassoLaunch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3c6dde6e-224b-477a-9b87-9b629895c15b"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchPower"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3fe11bb-b295-4759-8b52-a63720899fef"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VoodooPower"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""98866657-cada-48e0-b1fd-eaca2d2e01c9"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -363,6 +423,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_LassoLaunch = m_Player.FindAction("LassoLaunch", throwIfNotFound: true);
+        m_Player_SwitchPower = m_Player.FindAction("SwitchPower", throwIfNotFound: true);
+        m_Player_VoodooPower = m_Player.FindAction("VoodooPower", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -429,6 +492,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Fire;
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_LassoLaunch;
+    private readonly InputAction m_Player_SwitchPower;
+    private readonly InputAction m_Player_VoodooPower;
+    private readonly InputAction m_Player_Interact;
     public struct PlayerActions
     {
         private @PlayerInputs m_Wrapper;
@@ -440,6 +506,9 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
         public InputAction @Reload => m_Wrapper.m_Player_Reload;
         public InputAction @LassoLaunch => m_Wrapper.m_Player_LassoLaunch;
+        public InputAction @SwitchPower => m_Wrapper.m_Player_SwitchPower;
+        public InputAction @VoodooPower => m_Wrapper.m_Player_VoodooPower;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -470,6 +539,15 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @LassoLaunch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLassoLaunch;
                 @LassoLaunch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLassoLaunch;
                 @LassoLaunch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLassoLaunch;
+                @SwitchPower.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchPower;
+                @SwitchPower.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchPower;
+                @SwitchPower.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwitchPower;
+                @VoodooPower.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVoodooPower;
+                @VoodooPower.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVoodooPower;
+                @VoodooPower.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnVoodooPower;
+                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -495,6 +573,15 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 @LassoLaunch.started += instance.OnLassoLaunch;
                 @LassoLaunch.performed += instance.OnLassoLaunch;
                 @LassoLaunch.canceled += instance.OnLassoLaunch;
+                @SwitchPower.started += instance.OnSwitchPower;
+                @SwitchPower.performed += instance.OnSwitchPower;
+                @SwitchPower.canceled += instance.OnSwitchPower;
+                @VoodooPower.started += instance.OnVoodooPower;
+                @VoodooPower.performed += instance.OnVoodooPower;
+                @VoodooPower.canceled += instance.OnVoodooPower;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
             }
         }
     }
@@ -544,5 +631,8 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
         void OnFire(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnLassoLaunch(InputAction.CallbackContext context);
+        void OnSwitchPower(InputAction.CallbackContext context);
+        void OnVoodooPower(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
