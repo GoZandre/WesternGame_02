@@ -188,7 +188,7 @@ public class SheriffCharacter : MonoBehaviour
             }
 
             //Play effects
-            StartCoroutine(_cameraShake.Shake(.2f, .5f));
+            //StartCoroutine(_cameraShake.Shake(.2f, .5f));
 
             StartCoroutine(LockShootDelay(fireRate));
         }
