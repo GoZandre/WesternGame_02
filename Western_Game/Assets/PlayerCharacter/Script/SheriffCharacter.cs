@@ -104,6 +104,20 @@ public class SheriffCharacter : MonoBehaviour
         _dynamiteCountText.text = DynamiteCount.ToString();
     }
 
+    //private void Update()
+    //{
+    //    RaycastHit hit;
+
+    //    if (Physics.Raycast(transform.position, transform.up * -1, out hit, 1.1f))
+    //    {
+    //        transform.parent = hit.transform;
+    //    }
+    //    else
+    //    {
+    //        transform.parent = null;
+    //    }
+    //}
+
     private CollectableObject currentCollectable;
 
     [System.Obsolete]
@@ -114,29 +128,29 @@ public class SheriffCharacter : MonoBehaviour
 
         if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, interactionDistance, interactionLayerMask))
         {
-            if(hit.collider.gameObject.TryGetComponent<CollectableObject>(out collectableObject))
+            if (hit.collider.gameObject.TryGetComponent<CollectableObject>(out collectableObject))
             {
 
                 if (currentCollectable != collectableObject || currentCollectable == null)
                 {
-                    if(currentCollectable != null)
+                    if (currentCollectable != null)
                     {
                         OnInteract.RemoveListener(currentCollectable.Collect);
                     }
-                    
+
 
                     currentCollectable = collectableObject;
 
                     OnInteract.AddListener(collectableObject.Collect);
 
-                   
+
                 }
 
                 if (!_interactionUI.active)
                 {
                     _interactionUI.SetActive(true);
                 }
-                
+
             }
             else
             {
@@ -194,6 +208,15 @@ public class SheriffCharacter : MonoBehaviour
 
             StartCoroutine(LockShootDelay(fireRate));
         }
+        else if (_canShoot)
+        {
+            _canShoot = false;
+            _gunAnimator.SetTrigger("Reload");
+
+            _chargerAmmo = maxAmmo;
+
+            StartCoroutine(LockShootDelay(1f));
+        }
 
     }
 
@@ -207,7 +230,7 @@ public class SheriffCharacter : MonoBehaviour
 
             _chargerAmmo = maxAmmo;
 
-            StartCoroutine(LockShootDelay(.46f));
+            StartCoroutine(LockShootDelay(1f));
         }
 
     }
@@ -270,7 +293,7 @@ public class SheriffCharacter : MonoBehaviour
 
     public void SpanDynamite(InputAction.CallbackContext obj)
     {
-        if(DynamiteCount > 0)
+        if (DynamiteCount > 0)
         {
             ExplosiveObject newDynamite = Instantiate(_dynamitePrefab);
 
@@ -285,7 +308,7 @@ public class SheriffCharacter : MonoBehaviour
     private IEnumerator TPPlayer()
     {
         yield return null;
-        
+
 
         Vector3 playerPosition = transform.position;
 
@@ -311,7 +334,7 @@ public class SheriffCharacter : MonoBehaviour
     {
         _canShoot = false;
 
-        yield return new WaitForSeconds(fireRate);
+        yield return new WaitForSeconds(delay);
 
         _canShoot = true;
     }
@@ -323,9 +346,9 @@ public class SheriffCharacter : MonoBehaviour
         {
             Gizmos.DrawWireSphere(_camera.transform.position + _camera.transform.forward * interactionDistance, 0.25f);
         }
-       
 
-        
+
+
     }
 
 }
