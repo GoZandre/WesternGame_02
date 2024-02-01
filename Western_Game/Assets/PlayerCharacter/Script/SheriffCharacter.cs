@@ -26,6 +26,8 @@ public class SheriffCharacter : MonoBehaviour
     private Animator _gunAnimator;
     [SerializeField]
     private LassoBehvior _lasso;
+    [SerializeField]
+    private Collider _collider;
 
     [Space(20)]
 
@@ -249,20 +251,11 @@ public class SheriffCharacter : MonoBehaviour
         if (canUsePower)
         {
             GetComponent<FirstPersonController>().enabled = false;
+            _collider.enabled = false;
+
+            StartCoroutine(TPPlayer());
 
 
-
-            Vector3 position = transform.position;
-
-
-
-            transform.position = _lasso.grabbedObject.position;
-
-            _lasso.grabbedObject.position = position;
-
-            _lasso.UngrabObject();
-
-            StartCoroutine(ReloadFirstPersonController());
         }
     }
     public void VoodooPower(InputAction.CallbackContext obj)
@@ -289,11 +282,28 @@ public class SheriffCharacter : MonoBehaviour
             _dynamiteCountText.text = DynamiteCount.ToString();
         }
     }
+    private IEnumerator TPPlayer()
+    {
+        yield return null;
+        
 
+        Vector3 playerPosition = transform.position;
+
+
+
+        transform.position = _lasso.grabbedObject.position;
+
+        _lasso.grabbedObject.position = playerPosition;
+
+        _lasso.UngrabObject();
+
+        StartCoroutine(ReloadFirstPersonController());
+    }
     private IEnumerator ReloadFirstPersonController()
     {
         yield return null;
         GetComponent<FirstPersonController>().enabled = true;
+        _collider.enabled = true;
     }
 
 
