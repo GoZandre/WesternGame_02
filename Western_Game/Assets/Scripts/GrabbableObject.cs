@@ -7,6 +7,8 @@ public class GrabbableObject : MonoBehaviour
 {
     private NavMeshAgent agent;
 
+    public bool CanSwitch = true;
+
     private void Awake()
     {
         TryGetComponent<NavMeshAgent>(out agent);

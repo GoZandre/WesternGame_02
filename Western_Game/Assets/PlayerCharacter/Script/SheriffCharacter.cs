@@ -38,6 +38,11 @@ public class SheriffCharacter : MonoBehaviour
 
     [Space(20)]
     [SerializeField]
+    private TextMeshProUGUI _moneyCountText;
+    public TextMeshProUGUI MoneyCountText => _moneyCountText;
+
+    [Space(20)]
+    [SerializeField]
     private Transform _projectileSpawner;
     [SerializeField]
     private ProjectileBehavior _projectilePrefab;
@@ -58,6 +63,7 @@ public class SheriffCharacter : MonoBehaviour
 
     public int DynamiteCount = 0;
 
+    public float Money;
 
 
     //Input variables
@@ -74,6 +80,8 @@ public class SheriffCharacter : MonoBehaviour
         _cameraShake = Camera.main.GetComponent<CameraShake>();
         _controller = GetComponent<CharacterController>();
         _camera = Camera.main;
+
+        Money = 0;
 
     }
 
@@ -241,16 +249,23 @@ public class SheriffCharacter : MonoBehaviour
         RaycastHit hit;
         GrabbableObject grabbedObject;
 
-        if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 200f))
+        if(_lasso.grabbedObject == null)
         {
-            if (hit.collider.gameObject.TryGetComponent<GrabbableObject>(out grabbedObject))
+            if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out hit, 200f))
             {
-                _lasso.OnUngrabObject.AddListener(grabbedObject.OnUngrab);
+                if (hit.collider.gameObject.TryGetComponent<GrabbableObject>(out grabbedObject))
+                {
+                    _lasso.OnUngrabObject.AddListener(grabbedObject.OnUngrab);
 
-                grabbedObject.OnGrab();
+                    grabbedObject.OnGrab();
 
-                _lasso.GrabObject(hit);
+                    _lasso.GrabObject(hit);
 
+                }
+                else
+                {
+                    _lasso.UngrabObject();
+                }
             }
             else
             {
@@ -261,6 +276,7 @@ public class SheriffCharacter : MonoBehaviour
         {
             _lasso.UngrabObject();
         }
+        
 
     }
 
@@ -273,16 +289,22 @@ public class SheriffCharacter : MonoBehaviour
     {
         if (canUsePower)
         {
-            GetComponent<FirstPersonController>().enabled = false;
-            _collider.enabled = false;
+            if (_lasso.grabbedObject.GetComponent<GrabbableObject>().CanSwitch)
+            {
+                GetComponent<FirstPersonController>().enabled = false;
+                _collider.enabled = false;
 
-            StartCoroutine(TPPlayer());
-
+                StartCoroutine(TPPlayer());
+            }
 
         }
     }
     public void VoodooPower(InputAction.CallbackContext obj)
     {
+        Debug.Log("Come here");
+
+        _lasso.Joint.autoConfigureConnectedAnchor = false;
+        _lasso.Joint.connectedAnchor = Vector3.zero;
     }
 
     public void AddDynamite()

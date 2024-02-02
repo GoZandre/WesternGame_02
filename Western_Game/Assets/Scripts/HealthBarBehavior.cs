@@ -11,6 +11,7 @@ public class HealthBarBehavior : MonoBehaviour
 
     public Transform enemyTransform;
 
+    public MeshRenderer mr;
 
     private void Awake()
     {
@@ -23,9 +24,18 @@ public class HealthBarBehavior : MonoBehaviour
     {
         if (enemyTransform != null)
         {
-            Vector3 ScreenPos = Camera.main.WorldToScreenPoint(enemyTransform.position);
+            if (mr.isVisible)
+            {
+                Vector3 ScreenPos = Camera.main.WorldToScreenPoint(enemyTransform.position);
+                _rectTransform.position = ScreenPos;
+            }
+            else
+            {
+                _rectTransform.position = new Vector3(-100,-100,-100);
+            }
+            
 
-            _rectTransform.position = ScreenPos;
+           
         }
     }
 

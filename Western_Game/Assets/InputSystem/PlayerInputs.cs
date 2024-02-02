@@ -351,7 +351,18 @@ public partial class @PlayerInputs : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""c3fe11bb-b295-4759-8b52-a63720899fef"",
-                    ""path"": ""<Keyboard>/a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VoodooPower"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c8cfc90c-6d6a-43fb-8d28-8087a9a70f65"",
+                    ""path"": ""<Keyboard>/g"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",

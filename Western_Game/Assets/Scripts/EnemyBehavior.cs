@@ -44,6 +44,9 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField]
     private Transform _healthBarTransform;
 
+    [SerializeField]
+    private Material enemyMat;
+
     private void Awake()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -116,6 +119,7 @@ public class EnemyBehavior : MonoBehaviour
 
         _healthBar = Instantiate(_healthBarPrefab, canvasRenderer.transform);
         _healthBar.enemyTransform = _healthBarTransform;
+        _healthBar.mr = GetComponent<MeshRenderer>();
 
         _healthBar.UpdateHealth(health / maxHealth);
     }
@@ -142,6 +146,13 @@ public class EnemyBehavior : MonoBehaviour
         }
 
         _healthBar.UpdateHealth(health / maxHealth);
+
+        MeshRenderer mr;
+
+        if(enemyMat != null && TryGetComponent<MeshRenderer>(out mr))
+        {
+            mr.material = enemyMat;
+        }
     }
 
     public IEnumerator DelayUntileNextPath()
