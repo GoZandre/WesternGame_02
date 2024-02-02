@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Cage : MonoBehaviour
 {
@@ -10,14 +12,24 @@ public class Cage : MonoBehaviour
 
     public Quaternion objectiveRot;
 
+    public UnityEvent OnOpenCage = new UnityEvent();
+
+    private bool isOpen;
+
     private void Start()
     {
         lerp = 0;
+        isOpen = false;
     }
 
     public void OpenCage()
     {
-        StartCoroutine(CageRotation());
+        if (!isOpen)
+        {
+            isOpen = true;
+            StartCoroutine(CageRotation());
+
+        }
     }
 
     private IEnumerator CageRotation()
@@ -35,5 +47,7 @@ public class Cage : MonoBehaviour
 
             transform.rotation = newRot;
         }
+
+        OnOpenCage.Invoke();
     }
 }

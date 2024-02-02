@@ -60,7 +60,7 @@ public class ExplosiveObject : MonoBehaviour
         }
         else if(other.gameObject.TryGetComponent<Rigidbody>(out rb))
         {
-            rb.AddForce((other.transform.position - transform.position).normalized * 1000f);
+            rb.AddForce((other.transform.position - transform.position).normalized * 450f);
         }
 
     }

@@ -13,6 +13,8 @@ public class EnemyBehavior : MonoBehaviour
 
     private UnityEvent onMoveCharacter = new UnityEvent();
 
+    public UnityEvent OnReachPath = new UnityEvent();
+
     public UnityEvent OnDie = new UnityEvent();
 
     public float maxHealth;
@@ -33,7 +35,7 @@ public class EnemyBehavior : MonoBehaviour
 
     private NavMeshAgent _agent;
 
-
+    public bool AutoMove = true;
 
     [Header("References")]
     [SerializeField]
@@ -58,7 +60,11 @@ public class EnemyBehavior : MonoBehaviour
     {
         health = maxHealth;
 
-        MoveToNextPath();
+        if (AutoMove)
+        {
+            MoveToNextPath();
+        }
+        
         
 
     }
@@ -110,6 +116,8 @@ public class EnemyBehavior : MonoBehaviour
         {
             MoveToNextPath();
         }
+
+        OnReachPath.Invoke();
     }
 
 
@@ -153,6 +161,7 @@ public class EnemyBehavior : MonoBehaviour
         {
             mr.material = enemyMat;
         }
+        
     }
 
     public IEnumerator DelayUntileNextPath()
